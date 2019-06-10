@@ -27,6 +27,7 @@ switch(state)
 		}
 		else if	(dist < chk_Player_Range)
 		{
+			SpeedAcc = 1;
 			movePoint_x = APlayer.x;
 			movePoint_y = APlayer.y;
 			state = EMonsterState.MoveToPlayer;
@@ -38,7 +39,7 @@ switch(state)
 			{
 				tick = 0;
 				movePoint_x = random(room_width);
-				movePoint_y = random(room_width);
+				movePoint_y = random(room_height);
 				state = EMonsterState.Move;
 				MovementTime = random_range(MovementTimeMin, MovementTimeMax);
 			}
@@ -55,9 +56,12 @@ switch(state)
 
 switch(state)
 {
-	case EMonsterState.Idle			: IsProcessTick = true;  SpeedAcc = 1 - tick/MovementTime; ++tick; break;
-	case EMonsterState.Move			: IsProcessTick = true;  SpeedAcc = 1 - tick/MovementTime; ++tick; break;
-	
+	case EMonsterState.Idle			: 
+	case EMonsterState.Move			: 
+		IsProcessTick = true;  
+		SpeedAcc = 1 - tick/MovementTime; 
+		++tick; 
+		break;
 	default							: IsProcessTick = false; break;
 }
 

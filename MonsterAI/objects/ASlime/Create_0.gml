@@ -21,7 +21,7 @@ st_speed[1] = BaseSpeed * 1;
 
 
 // MoveToPlayer Speed;
-st_speed[2] = BaseSpeed * 2;
+st_speed[2] = BaseSpeed * 1.5;
 
 
 // Attack Speed;
