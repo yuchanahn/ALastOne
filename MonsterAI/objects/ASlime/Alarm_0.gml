@@ -1,29 +1,19 @@
-/// @description Insert description here
-// You can write your code in this editor
-
-if(IsAttack || IsChk_player)
+if(state == EMonsterState.Idle)
 {
-	alarm[0] = 1;
-	return;
-}
-
-if(!isPlayerInRange && !stop)
-{
+	state = EMonsterState.Move;
 	
 	movePoint_x = random(room_width);
 	movePoint_y = random(room_height);
-	stop = true;
 	
-	
-	alarm[0] = random_range(MovementTimeMin,MovementTimeMax);
+	alarm[0] = random_range(MovementTimeMin, MovementTimeMax);
 }
-else if(stop)
+else if(state == EMonsterState.Move)
 {
-	
-	Speed = 0;
-	stop = false;
-	
+	state = EMonsterState.Idle;
 	
 	alarm[0] = random_range(StopTimeMin,StopTimeMax);
 }
-
+else
+{
+	alarm[0] = 1;
+}
