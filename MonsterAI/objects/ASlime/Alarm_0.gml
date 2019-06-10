@@ -13,7 +13,3 @@ else if(state == EMonsterState.Move)
 	
 	alarm[0] = random_range(StopTimeMin,StopTimeMax);
 }
-else
-{
-	alarm[0] = 1;
-}

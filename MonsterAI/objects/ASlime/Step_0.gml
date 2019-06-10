@@ -31,7 +31,8 @@ switch(state)
 		}
 		else 
 		{
-			state = EMonsterState.Move;
+			alarm[0] = 1;
+			state = EMonsterState.Idle;
 		}
 		break;
 	default : break;
