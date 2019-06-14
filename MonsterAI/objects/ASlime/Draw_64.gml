@@ -1,13 +1,11 @@
-/// @description Insert description here
-// You can write your code in this editor
+//draw_text(x, y-60 ,_ST);
 
 
+//draw_text(x, y-80 ,sprite_index);
 
+draw_text(x - 20, y - 50, "Slime");
 
-
-draw_text(x,y, state);
-draw_text(x,y-20, st_speed[state]);
-draw_text(x,y- 40, movePoint_x)
-draw_text(x,y- 60, tick)
-draw_text(x,y- 80, SpeedAcc)
-
+if(showHPBar)
+{
+	draw_healthbar(x-40, y-70, x+40, y-65, (cur_HP/MAX_HP) * 100, c_gray,c_red, c_green, 0, true, true);
+}

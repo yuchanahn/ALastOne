@@ -1,0 +1,1 @@
+showHPBar = false;

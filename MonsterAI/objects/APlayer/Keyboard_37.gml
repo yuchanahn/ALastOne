@@ -1,4 +1,14 @@
-/// @description Insert description here
-// You can write your code in this editor
+Xkey = true;
 
-x -= 5;
+var cSpeed = PlayerSpeed;
+if(Xkey && YKey)
+{
+	cSpeed /= 2;
+}
+else
+{
+	py = y;
+}
+px = x;
+
+x -= cSpeed;

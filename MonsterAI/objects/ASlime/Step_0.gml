@@ -1,86 +1,97 @@
-//Main Process...
-switch(state)
+var bTick = false;
+
+switch(_ST)
 {
-	case EMonsterState.Attack : 
-	
-		sprite_index = SlimeAttack;
-		
-		if(image_index == 2)
+	case EMonST.KnockBack :
+		if(image_index == _knockBackSprIdxMax)
 		{
-			sprite_index = SlimeSpr;
-			state = EMonsterState.Move;
-		}
-		
-		break;
-		
-	case EMonsterState.Idle :
-	case EMonsterState.MoveToPlayer :
-	case EMonsterState.Move :
-	default :
-	
-		prevState = state;
-		dist = distance_to_object(APlayer);
-		
-		if		(dist < AttackRange)		
-		{
-			state = EMonsterState.Attack;
-		}
-		else if	(dist < chk_Player_Range)
-		{
-			SpeedAcc = 1;
-			movePoint_x = APlayer.x;
-			movePoint_y = APlayer.y;
-			state = EMonsterState.MoveToPlayer;
+			sprite_index = _idleSpr;
 		}
 		else
 		{
-			
-			if(prevState != EMonsterState.Move)
-			{
-				tick = 0;
-				movePoint_x = random(room_width);
-				movePoint_y = random(room_height);
-				state = EMonsterState.Move;
-				MovementTime = random_range(MovementTimeMin, MovementTimeMax);
-			}
-			if(state == EMonsterState.Idle)
-				MovementTime = random_range(StopTimeMin, StopTimeMax);
+			bKnockBack = true;
+		}
+		bTick = false; 
+	break;
+	case EMonST.Attack : 
+		if(image_index == _attackMgr._attackEndIdx)
+		{
+			_ST = EMonST.Idle;
+			sprite_index = _attackMgr._idleSpr;
 		}
 		
-		break;
-}
-
-
-
-// tick 계산 할지 말지 결정.
-
-switch(state)
-{
-	case EMonsterState.Idle			: 
-	case EMonsterState.Move			: 
-		IsProcessTick = true;  
-		SpeedAcc = 1 - tick/MovementTime; 
-		++tick; 
-		break;
-	default							: IsProcessTick = false; break;
-}
-
-// tick 계산 프로세스.
-if(IsProcessTick && tick > MovementTime)
-{
-	SpeedAcc = 1;
-	tick = 0;
-	switch(state)
-	{
-		case EMonsterState.Idle			: state = EMonsterState.Move;
-		case EMonsterState.Move			: state = EMonsterState.Idle;
+		bTick = false; 
+	break;
+	case EMonST.Idle : 
+	case EMonST.Move : 
+		
+		if		(distance_to_object(APlayer) < _attackMgr._attackDist)
+		{
+			_ST	= EMonST.Attack;
+			sprite_index = _attackMgr._attackSpr;
+		}
+		else if	(distance_to_object(APlayer) < _attackMgr._chkPlayerDist)	
+		{	
+			_MvST = EMonMvST.MvPlayer;
+			
+		}
+		else	
+		{ 
+			bTick   = true; 
+			_MvST	= EMonMvST.MvRandom; 
+		}
 	
-		default							: break;
-	}
-	movePoint_x = random(room_width);
-	movePoint_y = random(room_height);
+		switch(_MvST)
+		{
+			case EMonMvST.MvPlayer : 
+				Set(_targetPos, APlayer.x, APlayer.y);
+				break;
+			case EMonMvST.MvRandom :
+			default : 
+				break;
+		}
+		
+	break;
+	default : 
+	break;
 }
 
 
-move_towards_point(movePoint_x, movePoint_y, st_speed[state] * SpeedAcc);
 
+if(bTick)
+{
+	_tick[_ST]++;
+	_spdAcc = 1 - _tick[_ST] / _dtTime[_ST];
+	if(_tick[_ST] >= _dtTime[_ST])
+	{
+		_spdAcc = 0;
+		_tick[_ST] = 0;
+		
+		_ST = (_ST + 1) % 2;
+		_dtTime[_ST] = random_range(_timeMin[_ST], _timeMax[_ST]);
+		
+		if(_ST == EMonST.Move) 
+			Set_Random_RoomSize(_targetPos);
+	}
+}
+
+if(bKnockBack)
+{
+	_knockBackTick++;
+	if(_knockBackTick > _knockBackTime){
+		_knockBackTick = 0;
+		bKnockBack = false;
+		_ST = EMonST.Idle;
+		sprite_index = _idleSpr;
+	}
+	
+	_knockBackSpeedAcc = 1 - _knockBackTick/_knockBackTime;
+	curSpeed = _moveAble[EMonST.KnockBack] * _knockBackSpeedAcc;
+}
+else if (point_distance(_targetPos._x, _targetPos._y, x, y) < 1)
+	curSpeed = 0;
+else 
+	curSpeed = _speed * _moveAble[_ST] *_speedMv[_MvST] * (bUseAcc ? _spdAcc : 1);
+
+
+move_towards_point(_targetPos._x, _targetPos._y, curSpeed);

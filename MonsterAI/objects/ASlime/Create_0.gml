@@ -1,50 +1,66 @@
-/// @description Insert description here
-// You can write your code in this editor
-
-enum EMonsterState
-{
-	Idle = 0,
-	Move,
-	MoveToPlayer,
-	Attack,
-}
-
-BaseSpeed = 3;
-SpeedAcc = 1;
-
-// Idle Speed;
-st_speed[0] = BaseSpeed * 0;
+// setting 몬스터 별로 바뀌는 세팅.
+cur_HP = 1210;
+MAX_HP = 1210;
 
 
-// Move Speed;
-st_speed[1] = BaseSpeed * 1;
+bUseKnockBack = true;
+_knockBackSpr = SlimeKnockBack;
+_idleSpr = SlimeSpr;
+_knockBackSprIdxMax = 2;
+_knockBackTime = 30;
+bKnockBack = false;
+
+_speed  = 5;
+_spdAcc = 1;
+
+bUseAcc = true;
+
+_ST		= EMonST.Move;
+_MvST	= EMonMvST.MvRandom;
+
+_timeMin[EMonST.Move] = 60;
+_timeMax[EMonST.Move] = 50;
+
+_timeMin[EMonST.Idle] = 50;
+_timeMax[EMonST.Idle] = 60;
+
+_speedMv[EMonMvST.MvPlayer] = 1.5;
+
+_attackMgr = instance_create_layer(0, 0, AMain, AMonsterAtkMgr);
+
+_attackMgr._attackSpr				= SlimeAttack;
+_attackMgr._idleSpr					= SlimeSpr;
+_attackMgr._attackEndIdx			= 2;
+_attackMgr._attackDist				= 5;
+_attackMgr._chkPlayerDist			= 150;
+_attackMgr._beforAttack				= EMonST.Move;
 
 
-// MoveToPlayer Speed;
-st_speed[2] = BaseSpeed * 1.5;
 
 
-// Attack Speed;
-st_speed[3] = BaseSpeed * 0;
 
 
-state = EMonsterState.Move;
+// defult setting 권장.
 
-IsProcessTick = true;
+showHPBar = false;
 
-movePoint_x = random(room_width);
-movePoint_y = random(room_height);
+_targetPos = instance_create_layer(0, 0, AMain, Vector2D);
 
-StopTimeMax = 180;
-StopTimeMin = 120;
+Set_Random_RoomSize(_targetPos);
 
-tick = 0;
+_moveAble[EMonST.Attack] = 0;
+_moveAble[EMonST.Idle] = 0;
+_moveAble[EMonST.Move] = 1;
+_moveAble[EMonST.KnockBack] = 1;
 
-MovementTimeMax = 60;
-MovementTimeMin = 50;
+_speedMv[EMonMvST.MvRandom] = 1;
 
-AttackRange = 5;
-chk_Player_Range = 150;
+_dtTime[EMonST.Idle] = random_range(_timeMin[EMonST.Move], _timeMax[EMonST.Move]);
+_dtTime[EMonST.Move] = random_range(_timeMin[EMonST.Idle], _timeMax[EMonST.Idle]);
 
-MovementTime = random_range(MovementTimeMin,MovementTimeMax);
+_tick[EMonST.Move] = 0;
+_tick[EMonST.Idle] = 0;
 
+_knockBackDmg = 0;
+_knockBackSpeedAcc = 0;
+_knockBackTick = 0;

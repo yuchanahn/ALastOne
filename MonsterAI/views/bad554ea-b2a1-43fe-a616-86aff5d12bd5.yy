@@ -5,7 +5,8 @@
     "name": "bad554ea-b2a1-43fe-a616-86aff5d12bd5",
     "children": [
         "6c83ea91-d85d-4ea3-b9ab-b7d20458c083",
-        "65a06910-c296-41ff-8d0a-766c94f9cabe"
+        "65a06910-c296-41ff-8d0a-766c94f9cabe",
+        "20664722-fb5b-4937-9960-0a54bac5e32d"
     ],
     "filterType": "GMSprite",
     "folderName": "Slime",
